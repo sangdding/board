@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.board.domain.BoardVO;
+import com.board.domain.Page;
 import com.board.service.BoardService;
 
 @Controller
@@ -80,8 +81,30 @@ public class BoardController {
 	
 	// 게시물 목록 + 페이징 추가
 	@RequestMapping(value = "/listPage", method = RequestMethod.GET)
-	public void getListPAge(Model model, @RequestParam("num") int num) throws Exception {
-
+	public void getListPage(Model model, @RequestParam("num") int num) throws Exception {
+		
+		Page page = new Page();
+		
+		page.setNum(num);
+		page.setCount(service.count());
+		
+		List<BoardVO> list = null;
+		list = service.listPage(page.getDisplayPost(), page.getPostNum());
+		
+		model.addAttribute("list", list);
+		/*
+		model.addAttribute("pageNum", page.getPageNum());
+		
+		model.addAttribute("startPageNum", page.getStartPageNum());
+		model.addAttribute("endPageNum", page.getEndPageNum());
+		
+		model.addAttribute("prev", page.getPrev());
+		model.addAttribute("next", page.getNext());
+		*/
+		model.addAttribute("page", page);
+		
+		model.addAttribute("select", num);
+		/*
 		// 게시물 총 갯수
 		int count = service.count();
 		
@@ -125,6 +148,7 @@ public class BoardController {
 		// 이전 및 다음
 		model.addAttribute("prev", prev);
 		model.addAttribute("next", next);
+		*/
 	}
 
 	
